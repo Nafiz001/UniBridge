@@ -59,16 +59,11 @@ export default function HomePage() {
     }
   }, [filters]);
 
-  // Initial fetch
-  useEffect(() => {
-    fetchUniversities();
-  }, [fetchUniversities]);
-
   // Fetch on filter change with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchUniversities();
-    }, 500);
+    }, 300);
 
     return () => clearTimeout(timer);
   }, [filters, fetchUniversities]);
