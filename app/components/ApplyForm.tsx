@@ -69,6 +69,12 @@ export default function ApplyForm({
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Only submit on step 2
+    if (step !== 2) {
+      return;
+    }
+    
     setError('');
 
     // Validate step 2
