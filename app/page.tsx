@@ -293,42 +293,61 @@ export default function HomePage() {
 
                 {/* Page Numbers - Show limited on mobile */}
                 <div className="flex gap-1 md:gap-2 flex-wrap justify-center items-center">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page, index, array) => {
-                    // On mobile, show only current, first, last, and adjacent pages
-                    const showOnMobile = 
-                      page === 1 || 
-                      page === totalPages || 
-                      page === currentPage || 
-                      page === currentPage - 1 || 
-                      page === currentPage + 1;
+                  {(() => {
+                    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
+                    const visiblePages = pages.filter(page => {
+                      // On mobile, show only current, first, last, and adjacent pages
+                      return page === 1 || 
+                        page === totalPages || 
+                        page === currentPage || 
+                        page === currentPage - 1 || 
+                        page === currentPage + 1;
+                    });
                     
-                    // Check if we need ellipsis before this page
-                    const prevPage = index > 0 ? array[index - 1] : 0;
-                    const showEllipsisBefore = page - prevPage > 1 && index > 0;
-                    
-                    return (
-                      <React.Fragment key={page}>
-                        {/* Ellipsis before page */}
-                        {showEllipsisBefore && (
-                          <span className={`px-2 text-gray-500 ${!showOnMobile ? 'hidden sm:inline' : ''}`}>
-                            ...
-                          </span>
-                        )}
-                        
-                        {/* Page button */}
-                        <button
-                          onClick={() => setCurrentPage(page)}
-                          className={`w-8 h-8 md:w-10 md:h-10 rounded-lg text-sm md:text-base font-medium transition-colors ${
-                            currentPage === page
-                              ? 'bg-blue-600 text-white'
-                              : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
-                          } ${!showOnMobile ? 'hidden sm:flex sm:items-center sm:justify-center' : 'flex items-center justify-center'}`}
-                        >
-                          {page}
-                        </button>
-                      </React.Fragment>
-                    );
-                  })}
+                    return pages.map((page) => {
+                      const showOnMobile = visiblePages.includes(page);
+                      
+                      // Find previous visible page
+                      const visiblePageIndex = visiblePages.indexOf(page);
+                      const prevVisiblePage = visiblePageIndex > 0 ? visiblePages[visiblePageIndex - 1] : 0;
+                      const showEllipsisBefore = page - prevVisiblePage > 1 && visiblePageIndex > 0 && showOnMobile;
+                      
+                      if (!showOnMobile) {
+                        return (
+                          <button
+                            key={page}
+                            onClick={() => setCurrentPage(page)}
+                            className="hidden sm:flex sm:items-center sm:justify-center w-10 h-10 rounded-lg text-base font-medium transition-colors bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
+                          >
+                            {page}
+                          </button>
+                        );
+                      }
+                      
+                      return (
+                        <React.Fragment key={page}>
+                          {/* Ellipsis before page */}
+                          {showEllipsisBefore && (
+                            <span className="px-2 text-gray-500 text-sm md:text-base">
+                              ...
+                            </span>
+                          )}
+                          
+                          {/* Page button */}
+                          <button
+                            onClick={() => setCurrentPage(page)}
+                            className={`w-8 h-8 md:w-10 md:h-10 rounded-lg text-sm md:text-base font-medium transition-colors flex items-center justify-center ${
+                              currentPage === page
+                                ? 'bg-blue-600 text-white'
+                                : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                            }`}
+                          >
+                            {page}
+                          </button>
+                        </React.Fragment>
+                      );
+                    });
+                  })()}
                 </div>
 
                 {/* Next Button */}
