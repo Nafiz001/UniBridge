@@ -31,6 +31,9 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
           <p className="text-xl md:text-2xl text-blue-100 max-w-3xl mx-auto">
             Connect with top universities worldwide. Compare programs, check eligibility, and apply in minutes.
           </p>
+          <p className="text-sm md:text-base text-blue-200 mt-4 max-w-2xl mx-auto">
+            🎓 Smart filtering • 🌍 Global coverage • ⚡ Instant eligibility check
+          </p>
         </motion.div>
 
         {/* Animated Search Bar */}

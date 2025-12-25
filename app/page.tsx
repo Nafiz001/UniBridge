@@ -26,7 +26,7 @@ export default function HomePage() {
   const [showApplyForm, setShowApplyForm] = useState(false);
   const [applyUniversity, setApplyUniversity] = useState<{ id: number; name: string } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
-  const universitiesPerPage = 10;
+  const universitiesPerPage = 9;
 
   // Calculate pagination
   const indexOfLastUniversity = currentPage * universitiesPerPage;
@@ -174,6 +174,15 @@ export default function HomePage() {
 
           {/* Tuition Slider */}
           <TuitionSlider onChange={handleTuitionChange} />
+          
+          {/* Eligibility Note */}
+          {(filters.studentGPA || filters.studentIELTS) && (
+            <div className="mt-4 text-center">
+              <p className="text-xs text-gray-500 italic">
+                ℹ️ Eligibility is checked automatically based on your scores
+              </p>
+            </div>
+          )}
         </div>
 
         {/* Compare Button */}
@@ -219,8 +228,21 @@ export default function HomePage() {
 
         {/* Universities Grid */}
         {loading ? (
-          <div className="flex justify-center items-center py-20">
-            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="bg-white rounded-lg shadow-lg p-6 animate-pulse">
+                <div className="h-4 bg-gray-200 rounded w-3/4 mb-4"></div>
+                <div className="h-3 bg-gray-200 rounded w-1/2 mb-3"></div>
+                <div className="space-y-2 mb-4">
+                  <div className="h-3 bg-gray-200 rounded w-full"></div>
+                  <div className="h-3 bg-gray-200 rounded w-5/6"></div>
+                </div>
+                <div className="flex gap-2">
+                  <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+                  <div className="h-8 bg-gray-200 rounded w-1/2"></div>
+                </div>
+              </div>
+            ))}
           </div>
         ) : universities.length === 0 ? (
           <div className="text-center py-20">

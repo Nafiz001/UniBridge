@@ -23,8 +23,10 @@ export default function UniversityCard({
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4 }}
-      className={`bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 p-6 relative ${
+      className={`bg-white rounded-lg shadow-lg hover:shadow-xl transition-all duration-300 p-6 relative ${
         isSelected ? 'ring-2 ring-blue-500' : ''
+      } ${
+        !isEligible ? 'opacity-60' : ''
       }`}
     >
       {/* Eligibility Badge */}
