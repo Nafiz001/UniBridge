@@ -67,14 +67,7 @@ export default function ApplyForm({
     setStep(2);
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
-    // Only submit on step 2
-    if (step !== 2) {
-      return;
-    }
-    
+  const handleSubmit = async () => {
     setError('');
 
     // Validate step 2
@@ -209,7 +202,7 @@ export default function ApplyForm({
                 </div>
               </div>
 
-              <form onSubmit={handleSubmit}>
+              <div>
                 {/* Step 1: Personal Info */}
                 {step === 1 && (
                   <motion.div
@@ -283,11 +276,8 @@ export default function ApplyForm({
                         id="gpa"
                         name="gpa"
                         value={formData.gpa}
-                        onChange={handleChange}                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                          }
-                        }}                        step="0.01"
+                        onChange={handleChange}
+                        step="0.01"
                         min="0"
                         max="4"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -306,11 +296,6 @@ export default function ApplyForm({
                         name="ielts"
                         value={formData.ielts}
                         onChange={handleChange}
-                        onKeyDown={(e) => {
-                          if (e.key === 'Enter') {
-                            e.preventDefault();
-                          }
-                        }}
                         step="0.5"
                         min="0"
                         max="9"
@@ -351,7 +336,8 @@ export default function ApplyForm({
                     </button>
                   ) : (
                     <button
-                      type="submit"
+                      type="button"
+                      onClick={handleSubmit}
                       disabled={loading}
                       className="ml-auto px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-semibold transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed"
                     >
@@ -359,7 +345,7 @@ export default function ApplyForm({
                     </button>
                   )}
                 </div>
-              </form>
+              </div>
             </>
           )}
         </motion.div>
