@@ -51,31 +51,34 @@ export default function HomePage() {
 
       if (data.success) {
         setUniversities(data.data);
+        setCurrentPage(1); // Reset to first page on new data
+      } else {
+        console.error('API Error:', data.error);
+        setUniversities([]);
       }
     } catch (error) {
       console.error('Error fetching universities:', error);
+      setUniversities([]);
     } finally {
       setLoading(false);
     }
   }, [filters]);
 
-  // Fetch on filter change with debounce
+  // Fetch on mount and filter change with debounce
   useEffect(() => {
     const timer = setTimeout(() => {
       fetchUniversities();
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [filters, fetchUniversities]);
+  }, [fetchUniversities]);
 
   const handleSearchChange = useCallback((searchFilters: { country: string; degreeLevel: string }) => {
     setFilters((prev) => ({ ...prev, ...searchFilters }));
-    setCurrentPage(1);
   }, []);
 
   const handleTuitionChange = (min: number, max: number) => {
     setFilters((prev) => ({ ...prev, tuitionMin: min, tuitionMax: max }));
-    setCurrentPage(1);
   };
 
   const handleToggleSelect = (id: number) => {

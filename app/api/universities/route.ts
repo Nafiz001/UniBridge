@@ -19,6 +19,20 @@ export async function GET(request: NextRequest) {
       studentIELTS: searchParams.get('studentIELTS') ? Number(searchParams.get('studentIELTS')) : undefined,
     };
 
+    // Validate numeric values
+    if (filters.tuitionMin !== undefined && isNaN(filters.tuitionMin)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid tuitionMin value' },
+        { status: 400 }
+      );
+    }
+    if (filters.tuitionMax !== undefined && isNaN(filters.tuitionMax)) {
+      return NextResponse.json(
+        { success: false, error: 'Invalid tuitionMax value' },
+        { status: 400 }
+      );
+    }
+
     const universities = await UniversityModel.getUniversities(filters);
 
     return NextResponse.json({
