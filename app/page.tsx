@@ -326,9 +326,9 @@ export default function HomePage() {
                       
                       return (
                         <React.Fragment key={page}>
-                          {/* Ellipsis before page */}
+                          {/* Ellipsis before page - only on mobile */}
                           {showEllipsisBefore && (
-                            <span className="px-2 text-gray-500 text-sm md:text-base">
+                            <span className="px-2 text-gray-500 text-sm sm:hidden">
                               ...
                             </span>
                           )}
