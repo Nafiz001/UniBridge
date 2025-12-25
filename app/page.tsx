@@ -65,9 +65,9 @@ export default function HomePage() {
     return () => clearTimeout(timer);
   }, [filters, fetchUniversities]);
 
-  const handleSearchChange = (searchFilters: { country: string; degreeLevel: string }) => {
+  const handleSearchChange = useCallback((searchFilters: { country: string; degreeLevel: string }) => {
     setFilters((prev) => ({ ...prev, ...searchFilters }));
-  };
+  }, []);
 
   const handleTuitionChange = (min: number, max: number) => {
     setFilters((prev) => ({ ...prev, tuitionMin: min, tuitionMax: max }));
