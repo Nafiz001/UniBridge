@@ -40,7 +40,12 @@ export class UniversityModel {
     queryText += ' ORDER BY name ASC';
 
     const result = await query(queryText, params);
-    const universities: University[] = result.rows;
+    const universities: University[] = result.rows.map((row) => ({
+      ...row,
+      min_gpa: Number(row.min_gpa),
+      min_ielts: Number(row.min_ielts),
+      tuition_fee: Number(row.tuition_fee),
+    }));
 
     // Compute eligibility for each university
     if (studentGPA !== undefined || studentIELTS !== undefined) {
@@ -64,7 +69,12 @@ export class UniversityModel {
     const queryText = `SELECT * FROM universities WHERE id IN (${placeholders})`;
 
     const result = await query(queryText, ids);
-    return result.rows;
+    return result.rows.map((row) => ({
+      ...row,
+      min_gpa: Number(row.min_gpa),
+      min_ielts: Number(row.min_ielts),
+      tuition_fee: Number(row.tuition_fee),
+    }));
   }
 
   /**
@@ -72,7 +82,16 @@ export class UniversityModel {
    */
   static async getUniversityById(id: number): Promise<University | null> {
     const result = await query('SELECT * FROM universities WHERE id = $1', [id]);
-    return result.rows[0] || null;
+    const row = result.rows[0];
+    
+    if (!row) return null;
+    
+    return {
+      ...row,
+      min_gpa: Number(row.min_gpa),
+      min_ielts: Number(row.min_ielts),
+      tuition_fee: Number(row.tuition_fee),
+    };
   }
 
   /**
