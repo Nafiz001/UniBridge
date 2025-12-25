@@ -115,7 +115,7 @@ export default function ApplyForm({
         if (onSuccess) onSuccess();
         onClose();
       }, 2000);
-    } catch (err) {
+    } catch {
       setError('Network error. Please try again.');
       setLoading(false);
     }
@@ -168,7 +168,7 @@ export default function ApplyForm({
                 </svg>
               </div>
               <h3 className="text-2xl font-bold text-gray-900 mb-2">Application Submitted!</h3>
-              <p className="text-gray-600">We'll contact you shortly at {formData.email}</p>
+              <p className="text-gray-600">We&apos;ll contact you shortly at {formData.email}</p>
             </motion.div>
           ) : (
             <>

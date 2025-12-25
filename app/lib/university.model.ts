@@ -9,7 +9,7 @@ export class UniversityModel {
     const { country, degreeLevel, tuitionMin, tuitionMax, studentGPA, studentIELTS } = filters;
 
     let queryText = 'SELECT * FROM universities WHERE 1=1';
-    const params: any[] = [];
+    const params: (string | number)[] = [];
     let paramCount = 1;
 
     // Apply filters

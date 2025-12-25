@@ -44,7 +44,7 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     if (onSearch) {
       onSearch({ country, degreeLevel });
     }
-  }, [country, degreeLevel]);
+  }, [country, degreeLevel, onSearch]);
 
   return (
     <div className="bg-white rounded-lg shadow-2xl p-6 md:p-8 max-w-4xl mx-auto">

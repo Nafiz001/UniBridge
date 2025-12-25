@@ -9,7 +9,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onSearch }: HeroSectionProps) {
   return (
-    <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20 px-4 overflow-hidden">
+    <section className="relative bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20 px-4 overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{

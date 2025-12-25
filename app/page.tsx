@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { motion } from 'framer-motion';
 import HeroSection from './components/HeroSection';
 import TuitionSlider from './components/TuitionSlider';
@@ -27,7 +27,7 @@ export default function HomePage() {
   const [applyUniversity, setApplyUniversity] = useState<{ id: number; name: string } | null>(null);
 
   // Fetch universities
-  const fetchUniversities = async () => {
+  const fetchUniversities = useCallback(async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
@@ -49,12 +49,12 @@ export default function HomePage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [filters]);
 
   // Initial fetch
   useEffect(() => {
     fetchUniversities();
-  }, []);
+  }, [fetchUniversities]);
 
   // Fetch on filter change with debounce
   useEffect(() => {
@@ -63,7 +63,7 @@ export default function HomePage() {
     }, 500);
 
     return () => clearTimeout(timer);
-  }, [filters]);
+  }, [filters, fetchUniversities]);
 
   const handleSearchChange = (searchFilters: { country: string; degreeLevel: string }) => {
     setFilters((prev) => ({ ...prev, ...searchFilters }));

@@ -19,7 +19,7 @@ export function getPool(): Pool {
   return pool;
 }
 
-export async function query(text: string, params?: any[]) {
+export async function query(text: string, params?: (string | number | boolean | null)[]) {
   const pool = getPool();
   const start = Date.now();
   const res = await pool.query(text, params);
