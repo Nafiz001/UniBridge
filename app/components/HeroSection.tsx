@@ -3,7 +3,11 @@
 import { motion } from 'framer-motion';
 import SearchBar from './SearchBar';
 
-export default function HeroSection() {
+interface HeroSectionProps {
+  onSearch?: (filters: { country: string; degreeLevel: string }) => void;
+}
+
+export default function HeroSection({ onSearch }: HeroSectionProps) {
   return (
     <section className="relative bg-gradient-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20 px-4 overflow-hidden">
       {/* Background Pattern */}
@@ -35,7 +39,7 @@ export default function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.3, ease: 'easeOut' }}
         >
-          <SearchBar />
+          <SearchBar onSearch={onSearch} />
         </motion.div>
 
         {/* Stats */}

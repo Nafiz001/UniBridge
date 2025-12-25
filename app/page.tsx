@@ -117,7 +117,7 @@ export default function HomePage() {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <HeroSection />
+      <HeroSection onSearch={handleSearchChange} />
 
       {/* Filters Section */}
       <section className="max-w-7xl mx-auto px-4 py-12">
