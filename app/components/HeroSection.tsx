@@ -9,7 +9,7 @@ interface HeroSectionProps {
 
 export default function HeroSection({ onSearch }: HeroSectionProps) {
   return (
-    <section className="relative bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 text-white py-20 px-4 overflow-hidden">
+    <section className="relative bg-linear-to-br from-blue-600 via-blue-700 to-indigo-800 text-white min-h-[70vh] px-4 overflow-hidden flex items-center">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-10">
         <div className="absolute inset-0" style={{
@@ -17,7 +17,7 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
         }}></div>
       </div>
 
-      <div className="max-w-7xl mx-auto relative z-10">
+      <div className="max-w-7xl mx-auto relative z-10 py-12 w-full">
         {/* Animated Headline */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
