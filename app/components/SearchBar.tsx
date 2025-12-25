@@ -20,7 +20,17 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
     'France',
     'Netherlands',
     'Singapore',
+    'Switzerland',
     'Japan',
+    'South Korea',
+    'Sweden',
+    'Norway',
+    'Denmark',
+    'Ireland',
+    'New Zealand',
+    'Belgium',
+    'Austria',
+    'Hong Kong',
   ];
 
   const degreeLevels = [
