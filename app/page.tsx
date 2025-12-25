@@ -402,6 +402,8 @@ export default function HomePage() {
         <ApplyForm
           universityId={applyUniversity.id}
           universityName={applyUniversity.name}
+          studentGPA={filters.studentGPA}
+          studentIELTS={filters.studentIELTS}
           onClose={() => {
             setShowApplyForm(false);
             setApplyUniversity(null);

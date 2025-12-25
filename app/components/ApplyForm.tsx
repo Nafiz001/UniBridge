@@ -8,6 +8,8 @@ interface ApplyFormProps {
   universityName: string;
   onClose: () => void;
   onSuccess?: () => void;
+  studentGPA?: string;
+  studentIELTS?: string;
 }
 
 interface FormData {
@@ -23,14 +25,16 @@ export default function ApplyForm({
   universityName,
   onClose,
   onSuccess,
+  studentGPA = '',
+  studentIELTS = '',
 }: ApplyFormProps) {
   const [step, setStep] = useState(1);
   const [formData, setFormData] = useState<FormData>({
     student_name: '',
     email: '',
     phone: '',
-    gpa: '',
-    ielts: '',
+    gpa: studentGPA,
+    ielts: studentIELTS,
   });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
