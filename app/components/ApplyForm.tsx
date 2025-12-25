@@ -277,8 +277,11 @@ export default function ApplyForm({
                         id="gpa"
                         name="gpa"
                         value={formData.gpa}
-                        onChange={handleChange}
-                        step="0.01"
+                        onChange={handleChange}                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                          }
+                        }}                        step="0.01"
                         min="0"
                         max="4"
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
@@ -297,6 +300,11 @@ export default function ApplyForm({
                         name="ielts"
                         value={formData.ielts}
                         onChange={handleChange}
+                        onKeyDown={(e) => {
+                          if (e.key === 'Enter') {
+                            e.preventDefault();
+                          }
+                        }}
                         step="0.5"
                         min="0"
                         max="9"
