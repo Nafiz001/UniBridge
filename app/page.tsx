@@ -1,65 +1,268 @@
-import Image from "next/image";
+'use client';
 
-export default function Home() {
+import { useState, useEffect } from 'react';
+import { motion } from 'framer-motion';
+import HeroSection from './components/HeroSection';
+import TuitionSlider from './components/TuitionSlider';
+import UniversityCard from './components/UniversityCard';
+import CompareModal from './components/CompareModal';
+import ApplyForm from './components/ApplyForm';
+import { University } from './types/university';
+
+export default function HomePage() {
+  const [universities, setUniversities] = useState<University[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [filters, setFilters] = useState({
+    country: 'all',
+    degreeLevel: 'all',
+    tuitionMin: 0,
+    tuitionMax: 60000,
+    studentGPA: '',
+    studentIELTS: '',
+  });
+  const [selectedForCompare, setSelectedForCompare] = useState<number[]>([]);
+  const [showCompareModal, setShowCompareModal] = useState(false);
+  const [compareUniversities, setCompareUniversities] = useState<University[]>([]);
+  const [showApplyForm, setShowApplyForm] = useState(false);
+  const [applyUniversity, setApplyUniversity] = useState<{ id: number; name: string } | null>(null);
+
+  // Fetch universities
+  const fetchUniversities = async () => {
+    setLoading(true);
+    try {
+      const params = new URLSearchParams();
+      if (filters.country !== 'all') params.append('country', filters.country);
+      if (filters.degreeLevel !== 'all') params.append('degreeLevel', filters.degreeLevel);
+      params.append('tuitionMin', filters.tuitionMin.toString());
+      params.append('tuitionMax', filters.tuitionMax.toString());
+      if (filters.studentGPA) params.append('studentGPA', filters.studentGPA);
+      if (filters.studentIELTS) params.append('studentIELTS', filters.studentIELTS);
+
+      const response = await fetch(`/api/universities?${params.toString()}`);
+      const data = await response.json();
+
+      if (data.success) {
+        setUniversities(data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching universities:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Initial fetch
+  useEffect(() => {
+    fetchUniversities();
+  }, []);
+
+  // Fetch on filter change with debounce
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      fetchUniversities();
+    }, 500);
+
+    return () => clearTimeout(timer);
+  }, [filters]);
+
+  const handleSearchChange = (searchFilters: { country: string; degreeLevel: string }) => {
+    setFilters((prev) => ({ ...prev, ...searchFilters }));
+  };
+
+  const handleTuitionChange = (min: number, max: number) => {
+    setFilters((prev) => ({ ...prev, tuitionMin: min, tuitionMax: max }));
+  };
+
+  const handleToggleSelect = (id: number) => {
+    setSelectedForCompare((prev) => {
+      if (prev.includes(id)) {
+        return prev.filter((i) => i !== id);
+      } else if (prev.length < 3) {
+        return [...prev, id];
+      }
+      return prev;
+    });
+  };
+
+  const handleCompare = async () => {
+    if (selectedForCompare.length < 2 || selectedForCompare.length > 3) {
+      return;
+    }
+
+    try {
+      const response = await fetch('/api/compare', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ universityIds: selectedForCompare }),
+      });
+
+      const data = await response.json();
+      if (data.success) {
+        setCompareUniversities(data.data);
+        setShowCompareModal(true);
+      }
+    } catch (error) {
+      console.error('Error comparing universities:', error);
+    }
+  };
+
+  const handleApply = (id: number) => {
+    const university = universities.find((u) => u.id === id);
+    if (university) {
+      setApplyUniversity({ id: university.id, name: university.name });
+      setShowApplyForm(true);
+    }
+  };
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex min-h-screen w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <div className="min-h-screen bg-gray-50">
+      {/* Hero Section */}
+      <HeroSection />
+
+      {/* Filters Section */}
+      <section className="max-w-7xl mx-auto px-4 py-12">
+        <div className="bg-white rounded-lg shadow-lg p-6 md:p-8 mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-6">Refine Your Search</h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            {/* GPA Input */}
+            <div>
+              <label htmlFor="gpa" className="block text-sm font-semibold text-gray-700 mb-2">
+                Your GPA (0.0 - 4.0)
+              </label>
+              <input
+                type="number"
+                id="gpa"
+                value={filters.studentGPA}
+                onChange={(e) => setFilters((prev) => ({ ...prev, studentGPA: e.target.value }))}
+                step="0.01"
+                min="0"
+                max="4"
+                placeholder="e.g., 3.5"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+
+            {/* IELTS Input */}
+            <div>
+              <label htmlFor="ielts" className="block text-sm font-semibold text-gray-700 mb-2">
+                Your IELTS Score (0.0 - 9.0)
+              </label>
+              <input
+                type="number"
+                id="ielts"
+                value={filters.studentIELTS}
+                onChange={(e) => setFilters((prev) => ({ ...prev, studentIELTS: e.target.value }))}
+                step="0.5"
+                min="0"
+                max="9"
+                placeholder="e.g., 7.0"
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              />
+            </div>
+          </div>
+
+          {/* Tuition Slider */}
+          <TuitionSlider onChange={handleTuitionChange} />
+        </div>
+
+        {/* Compare Button */}
+        {selectedForCompare.length >= 2 && (
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="fixed bottom-8 right-8 z-40"
+          >
+            <button
+              onClick={handleCompare}
+              className="bg-green-600 hover:bg-green-700 text-white px-8 py-4 rounded-full shadow-2xl font-semibold text-lg flex items-center gap-2"
+            >
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"
+                />
+              </svg>
+              Compare ({selectedForCompare.length})
+            </button>
+          </motion.div>
+        )}
+
+        {/* Results Count */}
+        <div className="mb-6">
+          <h3 className="text-lg font-semibold text-gray-700">
+            {loading ? 'Loading...' : `${universities.length} universities found`}
+          </h3>
+          {selectedForCompare.length > 0 && (
+            <p className="text-sm text-gray-600 mt-1">
+              {selectedForCompare.length} selected for comparison (select 2-3)
+            </p>
+          )}
+        </div>
+
+        {/* Universities Grid */}
+        {loading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-16 w-16 border-b-2 border-blue-600"></div>
+          </div>
+        ) : universities.length === 0 ? (
+          <div className="text-center py-20">
+            <svg
+              className="w-20 h-20 text-gray-400 mx-auto mb-4"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              />
+            </svg>
+            <h3 className="text-xl font-semibold text-gray-700 mb-2">No universities found</h3>
+            <p className="text-gray-500">Try adjusting your filters</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {universities.map((university) => (
+              <UniversityCard
+                key={university.id}
+                university={university}
+                isSelected={selectedForCompare.includes(university.id)}
+                onToggleSelect={handleToggleSelect}
+                onApply={handleApply}
+              />
+            ))}
+          </div>
+        )}
+      </section>
+
+      {/* Compare Modal */}
+      {showCompareModal && (
+        <CompareModal
+          universities={compareUniversities}
+          onClose={() => {
+            setShowCompareModal(false);
+            setSelectedForCompare([]);
+          }}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
+      )}
+
+      {/* Apply Form */}
+      {showApplyForm && applyUniversity && (
+        <ApplyForm
+          universityId={applyUniversity.id}
+          universityName={applyUniversity.name}
+          onClose={() => {
+            setShowApplyForm(false);
+            setApplyUniversity(null);
+          }}
+          onSuccess={fetchUniversities}
+        />
+      )}
     </div>
   );
 }
