@@ -408,7 +408,6 @@ export default function HomePage() {
             setShowApplyForm(false);
             setApplyUniversity(null);
           }}
-          onSuccess={fetchUniversities}
         />
       )}
     </div>
