@@ -276,48 +276,60 @@ export default function HomePage() {
 
             {/* Pagination Controls */}
             {totalPages > 1 && (
-              <div className="mt-12 flex justify-center items-center gap-2">
+              <div className="mt-12 flex flex-wrap justify-center items-center gap-2">
                 {/* Previous Button */}
                 <button
                   onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  className={`px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-colors ${
                     currentPage === 1
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                       : 'bg-white text-blue-600 hover:bg-blue-50 border border-gray-300'
                   }`}
                 >
-                  Previous
+                  <span className="hidden sm:inline">Previous</span>
+                  <span className="sm:hidden">←</span>
                 </button>
 
-                {/* Page Numbers */}
-                <div className="flex gap-2">
-                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
-                    <button
-                      key={page}
-                      onClick={() => setCurrentPage(page)}
-                      className={`w-10 h-10 rounded-lg font-medium transition-colors ${
-                        currentPage === page
-                          ? 'bg-blue-600 text-white'
-                          : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
-                      }`}
-                    >
-                      {page}
-                    </button>
-                  ))}
+                {/* Page Numbers - Show limited on mobile */}
+                <div className="flex gap-1 md:gap-2 flex-wrap justify-center">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => {
+                    // On mobile, show only current, first, last, and adjacent pages
+                    const showOnMobile = 
+                      page === 1 || 
+                      page === totalPages || 
+                      page === currentPage || 
+                      page === currentPage - 1 || 
+                      page === currentPage + 1;
+                    
+                    return (
+                      <button
+                        key={page}
+                        onClick={() => setCurrentPage(page)}
+                        className={`w-8 h-8 md:w-10 md:h-10 rounded-lg text-sm md:text-base font-medium transition-colors ${
+                          currentPage === page
+                            ? 'bg-blue-600 text-white'
+                            : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                        } ${!showOnMobile ? 'hidden sm:flex sm:items-center sm:justify-center' : 'flex items-center justify-center'}`}
+                      >
+                        {page}
+                      </button>
+                    );
+                  })}
                 </div>
 
                 {/* Next Button */}
                 <button
                   onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                  className={`px-3 md:px-4 py-2 rounded-lg text-sm md:text-base font-medium transition-colors ${
                     currentPage === totalPages
                       ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
                       : 'bg-white text-blue-600 hover:bg-blue-50 border border-gray-300'
                   }`}
                 >
-                  Next
+                  <span className="hidden sm:inline">Next</span>
+                  <span className="sm:hidden">→</span>
                 </button>
               </div>
             )}
