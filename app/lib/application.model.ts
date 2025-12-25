@@ -12,7 +12,7 @@ export class ApplicationModel {
     message: string;
     applicationId?: number;
   }> {
-    const { university_id, student_name, email, gpa, ielts } = applicationData;
+    const { university_id, student_name, email, phone, gpa, ielts } = applicationData;
 
     // Fetch university requirements
     const university = await UniversityModel.getUniversityById(university_id);
@@ -46,12 +46,12 @@ export class ApplicationModel {
 
     // Insert valid application into database
     const insertQuery = `
-      INSERT INTO applications (university_id, student_name, email, gpa, ielts, created_at)
-      VALUES ($1, $2, $3, $4, $5, NOW())
+      INSERT INTO applications (university_id, student_name, email, phone, gpa, ielts, created_at)
+      VALUES ($1, $2, $3, $4, $5, $6, NOW())
       RETURNING id
     `;
 
-    const result = await query(insertQuery, [university_id, student_name, email, gpa, ielts]);
+    const result = await query(insertQuery, [university_id, student_name, email, phone, gpa, ielts]);
 
     return {
       success: true,

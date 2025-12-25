@@ -4,15 +4,15 @@ import { ApplicationModel } from '@/app/lib/application.model';
 /**
  * POST /api/applications
  * Controller for creating applications with server-side validation
- * Body: { university_id, student_name, email, gpa, ielts }
+ * Body: { university_id, student_name, email, phone, gpa, ielts }
  */
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { university_id, student_name, email, gpa, ielts } = body;
+    const { university_id, student_name, email, phone, gpa, ielts } = body;
 
     // Validate required fields
-    if (!university_id || !student_name || !email || gpa === undefined || ielts === undefined) {
+    if (!university_id || !student_name || !email || !phone || gpa === undefined || ielts === undefined) {
       return NextResponse.json(
         {
           success: false,
@@ -66,11 +66,24 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Validate phone format
+    const phoneRegex = /^[\d+\-\s()]+$/;
+    if (!phoneRegex.test(phone)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: 'Invalid phone format',
+        },
+        { status: 400 }
+      );
+    }
+
     // Create application with server-side eligibility validation
     const result = await ApplicationModel.createApplication({
       university_id,
       student_name,
       email,
+      phone,
       gpa,
       ielts,
     });

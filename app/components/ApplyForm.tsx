@@ -13,6 +13,7 @@ interface ApplyFormProps {
 interface FormData {
   student_name: string;
   email: string;
+  phone: string;
   gpa: string;
   ielts: string;
 }
@@ -27,6 +28,7 @@ export default function ApplyForm({
   const [formData, setFormData] = useState<FormData>({
     student_name: '',
     email: '',
+    phone: '',
     gpa: '',
     ielts: '',
   });
@@ -51,6 +53,10 @@ export default function ApplyForm({
       }
       if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
         setError('Please enter a valid email address');
+        return;
+      }
+      if (!formData.phone.trim() || !/^[\d+\-\s()]+$/.test(formData.phone)) {
+        setError('Please enter a valid phone number');
         return;
       }
     }
@@ -87,6 +93,7 @@ export default function ApplyForm({
           university_id: universityId,
           student_name: formData.student_name,
           email: formData.email,
+          phone: formData.phone,
           gpa: gpaNum,
           ielts: ieltsNum,
         }),
@@ -228,6 +235,22 @@ export default function ApplyForm({
                         onChange={handleChange}
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         placeholder="john@example.com"
+                        required
+                      />
+                    </div>
+
+                    <div>
+                      <label htmlFor="phone" className="block text-sm font-semibold text-gray-700 mb-2">
+                        Phone Number *
+                      </label>
+                      <input
+                        type="tel"
+                        id="phone"
+                        name="phone"
+                        value={formData.phone}
+                        onChange={handleChange}
+                        className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                        placeholder="+1 (555) 123-4567"
                         required
                       />
                     </div>
