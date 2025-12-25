@@ -25,6 +25,14 @@ export default function HomePage() {
   const [compareUniversities, setCompareUniversities] = useState<University[]>([]);
   const [showApplyForm, setShowApplyForm] = useState(false);
   const [applyUniversity, setApplyUniversity] = useState<{ id: number; name: string } | null>(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const universitiesPerPage = 10;
+
+  // Calculate pagination
+  const indexOfLastUniversity = currentPage * universitiesPerPage;
+  const indexOfFirstUniversity = indexOfLastUniversity - universitiesPerPage;
+  const currentUniversities = universities.slice(indexOfFirstUniversity, indexOfLastUniversity);
+  const totalPages = Math.ceil(universities.length / universitiesPerPage);
 
   // Fetch universities
   const fetchUniversities = useCallback(async () => {
@@ -67,10 +75,12 @@ export default function HomePage() {
 
   const handleSearchChange = useCallback((searchFilters: { country: string; degreeLevel: string }) => {
     setFilters((prev) => ({ ...prev, ...searchFilters }));
+    setCurrentPage(1);
   }, []);
 
   const handleTuitionChange = (min: number, max: number) => {
     setFilters((prev) => ({ ...prev, tuitionMin: min, tuitionMax: max }));
+    setCurrentPage(1);
   };
 
   const handleToggleSelect = (id: number) => {
@@ -195,6 +205,11 @@ export default function HomePage() {
           <h3 className="text-lg font-semibold text-gray-700">
             {loading ? 'Loading...' : `${universities.length} universities found`}
           </h3>
+          {universities.length > 0 && (
+            <p className="text-sm text-gray-600 mt-1">
+              Showing {indexOfFirstUniversity + 1}-{Math.min(indexOfLastUniversity, universities.length)} of {universities.length}
+            </p>
+          )}
           {selectedForCompare.length > 0 && (
             <p className="text-sm text-gray-600 mt-1">
               {selectedForCompare.length} selected for comparison (select 2-3)
@@ -226,17 +241,67 @@ export default function HomePage() {
             <p className="text-gray-500">Try adjusting your filters</p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {universities.map((university) => (
-              <UniversityCard
-                key={university.id}
-                university={university}
-                isSelected={selectedForCompare.includes(university.id)}
-                onToggleSelect={handleToggleSelect}
-                onApply={handleApply}
-              />
-            ))}
-          </div>
+          <>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {currentUniversities.map((university) => (
+                <UniversityCard
+                  key={university.id}
+                  university={university}
+                  isSelected={selectedForCompare.includes(university.id)}
+                  onToggleSelect={handleToggleSelect}
+                  onApply={handleApply}
+                />
+              ))}
+            </div>
+
+            {/* Pagination Controls */}
+            {totalPages > 1 && (
+              <div className="mt-12 flex justify-center items-center gap-2">
+                {/* Previous Button */}
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  disabled={currentPage === 1}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    currentPage === 1
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-white text-blue-600 hover:bg-blue-50 border border-gray-300'
+                  }`}
+                >
+                  Previous
+                </button>
+
+                {/* Page Numbers */}
+                <div className="flex gap-2">
+                  {Array.from({ length: totalPages }, (_, i) => i + 1).map((page) => (
+                    <button
+                      key={page}
+                      onClick={() => setCurrentPage(page)}
+                      className={`w-10 h-10 rounded-lg font-medium transition-colors ${
+                        currentPage === page
+                          ? 'bg-blue-600 text-white'
+                          : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                      }`}
+                    >
+                      {page}
+                    </button>
+                  ))}
+                </div>
+
+                {/* Next Button */}
+                <button
+                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  disabled={currentPage === totalPages}
+                  className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                    currentPage === totalPages
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed'
+                      : 'bg-white text-blue-600 hover:bg-blue-50 border border-gray-300'
+                  }`}
+                >
+                  Next
+                </button>
+              </div>
+            )}
+          </>
         )}
       </section>
 
