@@ -1,5 +1,14 @@
 # UniBridge Deployment Guide
 
+## 🌐 Production Deployment
+
+**Live URL**: [https://unibridge-green.vercel.app/](https://unibridge-green.vercel.app/)  
+**Platform**: Vercel  
+**Database**: Supabase (PostgreSQL)  
+**Status**: ✅ Deployed & Live
+
+---
+
 ## Quick Setup for Development
 
 ### 1. Prerequisites Check

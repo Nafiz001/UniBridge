@@ -6,7 +6,9 @@
 **Type**: Full-Stack Web Application  
 **Purpose**: Internship Task Submission  
 **Architecture**: MVC (Model-View-Controller)  
-**Status**: ✅ Complete & Production-Ready
+**Status**: ✅ Complete & Deployed to Production  
+**Live URL**: [https://unibridge-green.vercel.app/](https://unibridge-green.vercel.app/)  
+**GitHub**: [https://github.com/Nafiz001/UniBridge](https://github.com/Nafiz001/UniBridge)
 
 ---
 

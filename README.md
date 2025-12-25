@@ -1,6 +1,8 @@
 # UniBridge - University Admission Platform
 
-A full-stack MVC-structured university admission platform built with Next.js, PostgreSQL, Tailwind CSS, and Framer Motion.
+🚀 **[Live Demo](https://unibridge-green.vercel.app/)** - Deployed on Vercel
+
+A full-stack MVC-structured university admission platform built with Next.js, PostgreSQL (Supabase), Tailwind CSS, and Framer Motion. Featuring 53+ universities across 20+ countries with real-time filtering, eligibility checking, and side-by-side comparison.
 
 ## 🚀 Features
 
@@ -253,7 +255,7 @@ Created as an internship task demonstrating full-stack development skills with s
 
 ## 🔗 Links
 
-- [Live Demo](#) (Add after deployment)
+- [Live Application](https://unibridge-green.vercel.app/) - Production Deployment
 - [GitHub Repository](https://github.com/Nafiz001/UniBridge)
 
 ---
