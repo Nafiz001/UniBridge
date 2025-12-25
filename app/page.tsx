@@ -291,44 +291,57 @@ export default function HomePage() {
                   <span className="sm:hidden">←</span>
                 </button>
 
-                {/* Page Numbers - Show limited on mobile */}
+                {/* Page Numbers - Smart pagination with ellipsis */}
                 <div className="flex gap-1 md:gap-2 flex-wrap justify-center items-center">
                   {(() => {
-                    const pages = Array.from({ length: totalPages }, (_, i) => i + 1);
-                    const visiblePages = pages.filter(page => {
-                      // On mobile, show only current, first, last, and adjacent pages
-                      return page === 1 || 
-                        page === totalPages || 
-                        page === currentPage || 
-                        page === currentPage - 1 || 
-                        page === currentPage + 1;
-                    });
-                    
-                    return pages.map((page) => {
-                      const showOnMobile = visiblePages.includes(page);
+                    const getVisiblePages = (isMobile: boolean) => {
+                      const delta = isMobile ? 1 : 2; // Show 1 page on each side for mobile, 2 for desktop
+                      const range: number[] = [];
                       
-                      // Find previous visible page
-                      const visiblePageIndex = visiblePages.indexOf(page);
-                      const prevVisiblePage = visiblePageIndex > 0 ? visiblePages[visiblePageIndex - 1] : 0;
-                      const showEllipsisBefore = page - prevVisiblePage > 1 && visiblePageIndex > 0 && showOnMobile;
+                      // Always include first page
+                      range.push(1);
                       
-                      if (!showOnMobile) {
-                        return (
-                          <button
-                            key={page}
-                            onClick={() => setCurrentPage(page)}
-                            className="hidden sm:flex sm:items-center sm:justify-center w-10 h-10 rounded-lg text-base font-medium transition-colors bg-white text-gray-700 hover:bg-gray-100 border border-gray-300"
-                          >
-                            {page}
-                          </button>
-                        );
+                      // Add pages around current page
+                      for (let i = currentPage - delta; i <= currentPage + delta; i++) {
+                        if (i > 1 && i < totalPages) {
+                          range.push(i);
+                        }
                       }
+                      
+                      // Always include last page
+                      if (totalPages > 1) {
+                        range.push(totalPages);
+                      }
+                      
+                      // Remove duplicates and sort
+                      return [...new Set(range)].sort((a, b) => a - b);
+                    };
+                    
+                    const mobilePages = getVisiblePages(true);
+                    const desktopPages = getVisiblePages(false);
+                    
+                    return desktopPages.map((page, index) => {
+                      const showOnMobile = mobilePages.includes(page);
+                      const prevDesktopPage = index > 0 ? desktopPages[index - 1] : 0;
+                      const prevMobilePage = showOnMobile && mobilePages.indexOf(page) > 0 
+                        ? mobilePages[mobilePages.indexOf(page) - 1] 
+                        : 0;
+                      
+                      const showDesktopEllipsis = page - prevDesktopPage > 1 && index > 0;
+                      const showMobileEllipsis = showOnMobile && page - prevMobilePage > 1 && mobilePages.indexOf(page) > 0;
                       
                       return (
                         <React.Fragment key={page}>
-                          {/* Ellipsis before page - only on mobile */}
-                          {showEllipsisBefore && (
-                            <span className="px-2 text-gray-500 text-sm sm:hidden">
+                          {/* Desktop Ellipsis */}
+                          {showDesktopEllipsis && (
+                            <span className="hidden sm:inline px-2 text-gray-500 text-base">
+                              ...
+                            </span>
+                          )}
+                          
+                          {/* Mobile Ellipsis */}
+                          {showMobileEllipsis && (
+                            <span className="sm:hidden px-2 text-gray-500 text-sm">
                               ...
                             </span>
                           )}
@@ -336,10 +349,14 @@ export default function HomePage() {
                           {/* Page button */}
                           <button
                             onClick={() => setCurrentPage(page)}
-                            className={`w-8 h-8 md:w-10 md:h-10 rounded-lg text-sm md:text-base font-medium transition-colors flex items-center justify-center ${
+                            className={`w-8 h-8 md:w-10 md:h-10 rounded-lg text-sm md:text-base font-medium transition-colors ${
                               currentPage === page
                                 ? 'bg-blue-600 text-white'
                                 : 'bg-white text-gray-700 hover:bg-gray-100 border border-gray-300'
+                            } ${
+                              showOnMobile 
+                                ? 'flex items-center justify-center' 
+                                : 'hidden sm:flex sm:items-center sm:justify-center'
                             }`}
                           >
                             {page}
