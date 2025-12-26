@@ -45,26 +45,8 @@ export default function HeroSection({ onSearch }: HeroSectionProps) {
           <SearchBar onSearch={onSearch} />
         </motion.div>
 
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 0.6 }}
-          className="mt-16 grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
-        >
-          <div>
-            <div className="text-4xl font-bold text-blue-200">100+</div>
-            <div className="text-blue-100 mt-2">Universities</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-blue-200">50+</div>
-            <div className="text-blue-100 mt-2">Countries</div>
-          </div>
-          <div>
-            <div className="text-4xl font-bold text-blue-200">10,000+</div>
-            <div className="text-blue-100 mt-2">Students Placed</div>
-          </div>
-        </motion.div>
+        
+        
       </div>
     </section>
   );
