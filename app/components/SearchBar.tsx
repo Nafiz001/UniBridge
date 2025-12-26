@@ -35,8 +35,8 @@ export default function SearchBar({ onSearch }: SearchBarProps) {
 
   const degreeLevels = [
     'all',
-    'Bachelor',
-    'Master',
+    'Bachelor\'s',
+    'Master\'s',
     'PhD',
   ];
 
