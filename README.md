@@ -78,6 +78,7 @@ Alternatively, connect to PostgreSQL and run:
 ```sql
 \i seed.sql
 ```
+For local development, PostgreSQL can be used. For production, a managed PostgreSQL service such as Supabase or Neon is recommended.
 
 ### 4. Environment Configuration
 
@@ -221,7 +222,7 @@ Consider using:
 ## 🧪 Testing
 
 The application includes:
-- 15 seed universities across 8 countries
+- 53 seed universities across 20 countries
 - Varied degree levels (Bachelor, Master, PhD)
 - Different tuition ranges ($15,000 - $58,000)
 - Diverse GPA/IELTS requirements
